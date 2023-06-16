@@ -1,5 +1,6 @@
 package com.grupoacert.services;
 
+import java.util.List;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,16 +26,20 @@ public class EntregaService {
 	}
 	
 	public void delete(Integer id) {
-		Optional<Entrega> cliente = entregaRepository.findById(id);
-		if (!cliente.isPresent()) {
+		Optional<Entrega> entrega = entregaRepository.findById(id);
+		if (!entrega.isPresent()) {
 			throw new ObjectNotFoundException("Entrega não encontrada, ID: " + id);
 		}
-		entregaRepository.deleteById(cliente.get().getId());
+		entregaRepository.deleteById(entrega.get().getId());
 	}
 	
 	public Entrega find(Integer id) {
-		Optional<Entrega> cliente = entregaRepository.findById(id);
-		return cliente.orElseThrow(() -> new ObjectNotFoundException("Entrega não encontrada, ID: " + id));
+		Optional<Entrega> entrega = entregaRepository.findById(id);
+		return entrega.orElseThrow(() -> new ObjectNotFoundException("Entrega não encontrada, ID: " + id));
+	}
+
+	public List<Entrega> findAll() {
+		return entregaRepository.findAll();
 	}
 	
 }

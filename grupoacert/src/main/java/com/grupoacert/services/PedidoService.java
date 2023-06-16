@@ -1,6 +1,7 @@
 package com.grupoacert.services;
 
 import java.util.Date;
+import java.util.List;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -29,15 +30,19 @@ public class PedidoService {
 	}
 	
 	public void delete(Integer id) {
-		Optional<Pedido> cliente = pedidoRepository.findById(id);
-		if (!cliente.isPresent()) {
+		Optional<Pedido> pedido = pedidoRepository.findById(id);
+		if (!pedido.isPresent()) {
 			throw new ObjectNotFoundException("Pedido não encontrado, ID: " + id);
 		}
-		pedidoRepository.deleteById(cliente.get().getId());
+		pedidoRepository.deleteById(pedido.get().getId());
 	}
 	
 	public Pedido update(Pedido pedido) {
 		return pedidoRepository.saveAndFlush(pedido);
+	}
+
+	public List<Pedido> findAll() {
+		return pedidoRepository.findAll();
 	}
 
 }

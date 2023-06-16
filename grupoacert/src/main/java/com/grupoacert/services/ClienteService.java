@@ -1,5 +1,6 @@
 package com.grupoacert.services;
 
+import java.util.List;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -35,6 +36,10 @@ public class ClienteService {
 	public Cliente find(Integer id) {
 		Optional<Cliente> cliente = clienteRepository.findById(id);
 		return cliente.orElseThrow(() -> new ObjectNotFoundException("Cliente não encontrado, ID: " + id));
+	}
+	
+	public List<Cliente> findAll() {
+		return clienteRepository.findAll();
 	}
 
 }
