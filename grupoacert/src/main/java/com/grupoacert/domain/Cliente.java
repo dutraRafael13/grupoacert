@@ -32,7 +32,11 @@ public class Cliente implements Serializable {
 	private String nome;
 	
 	@Column(unique = true)
-	private String sobrenome;
+	private String email;
+	
+	@JsonIgnore
+	@Column
+	private String password;
 	
 	@JsonIgnore
 	@OneToMany(mappedBy = "cliente")
