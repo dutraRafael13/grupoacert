@@ -6,7 +6,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.env.Environment;
-import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -35,6 +34,9 @@ public class SecurityConfig {
 	@Autowired
 	private JWTUtil jwtUtil;
 	
+	@Autowired
+	private AuthenticationConfiguration authenticationConfiguration;
+	
 	private static final String[] PUBLIC_MATCHERS = {
 			"/h2-console/**"
 	};
@@ -48,7 +50,7 @@ public class SecurityConfig {
         http.authorizeHttpRequests().antMatchers(PUBLIC_MATCHERS).permitAll()
         	.anyRequest().authenticated();
         http.sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS);
-        http.addFilter(new JWTAuthenticationFilter(jwtUtil));
+        http.addFilter(new JWTAuthenticationFilter(authenticationConfiguration.getAuthenticationManager(), jwtUtil));
         return http.build();
     }
 	
@@ -67,10 +69,5 @@ public class SecurityConfig {
 	public BCryptPasswordEncoder bCryptPasswordEncoder() {
 		return new BCryptPasswordEncoder();
 	}
-	
-	@Bean
-    public AuthenticationManager authenticationManager(AuthenticationConfiguration authenticationConfiguration) throws Exception {
-        return authenticationConfiguration.getAuthenticationManager();
-    }
 
 }
