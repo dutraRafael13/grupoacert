@@ -19,6 +19,7 @@ import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 
 import com.grupoacert.security.JWTAuthenticationFilter;
+import com.grupoacert.security.JWTAuthorizationFilter;
 import com.grupoacert.security.JWTUtil;
 
 @Configuration
@@ -51,6 +52,7 @@ public class SecurityConfig {
         	.anyRequest().authenticated();
         http.sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS);
         http.addFilter(new JWTAuthenticationFilter(authenticationConfiguration.getAuthenticationManager(), jwtUtil));
+        http.addFilter(new JWTAuthorizationFilter(authenticationConfiguration.getAuthenticationManager(), jwtUtil, userDetailsService));
         return http.build();
     }
 	
