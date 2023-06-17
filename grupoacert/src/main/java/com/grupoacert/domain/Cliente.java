@@ -34,7 +34,7 @@ public class Cliente implements Serializable {
 	@Column(unique = true)
 	private String email;
 	
-	@JsonIgnore
+//	@JsonIgnore
 	@Column
 	private String password;
 	

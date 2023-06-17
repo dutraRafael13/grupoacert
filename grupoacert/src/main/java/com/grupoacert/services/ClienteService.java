@@ -27,6 +27,7 @@ public class ClienteService {
 	}
 	
 	public Cliente update(Cliente cliente) {
+		cliente.setPassword(encrypt.encode(cliente.getPassword()));
 		return clienteRepository.saveAndFlush(cliente);
 	}
 	
