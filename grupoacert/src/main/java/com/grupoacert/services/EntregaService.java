@@ -11,6 +11,7 @@ import com.grupoacert.domain.Entrega;
 import com.grupoacert.domain.Pedido;
 import com.grupoacert.dto.EntregaDTO;
 import com.grupoacert.repositories.EntregaRepository;
+import com.grupoacert.services.exceptions.DuplicateDeliveryException;
 import com.grupoacert.services.exceptions.ObjectNotFoundException;
 
 @Service
@@ -27,11 +28,19 @@ public class EntregaService {
 	
 	@Transactional
 	public Entrega insert(Entrega entrega) {
+		this.verificaPedido(entrega.getPedido().getId());
 		entrega.setId(null);
 		entrega = entregaRepository.save(entrega);
 		entrega.getPedido().setEntrega(entrega);
 		pedidoService.update(entrega.getPedido());
 		return entrega;
+	}
+	
+	private void verificaPedido(Integer idPedido) {
+		Pedido pedido = pedidoService.find(idPedido);
+		if (pedido != null && pedido.getEntrega() != null) {
+			throw new DuplicateDeliveryException("Pedido já entregue, ID: " + pedido.getId());
+		}
 	}
 	
 	public Entrega update(Entrega entrega) {
