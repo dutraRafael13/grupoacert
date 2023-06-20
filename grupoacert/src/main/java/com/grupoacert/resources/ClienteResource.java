@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import com.grupoacert.domain.Cliente;
+import com.grupoacert.dto.ClienteDTO;
 import com.grupoacert.services.ClienteService;
 
 @RestController
@@ -29,15 +30,16 @@ public class ClienteResource {
 	}
 	
 	@RequestMapping(method = RequestMethod.POST)
-	public ResponseEntity<Void> insert(@RequestBody Cliente cliente) {
-		cliente = service.insert(cliente);
+	public ResponseEntity<Void> insert(@RequestBody ClienteDTO clienteDTO) {
+		Cliente cliente = service.insert(service.fromDTO(clienteDTO));
 		URI uri = ServletUriComponentsBuilder.fromCurrentRequest().path("/{id}").buildAndExpand(cliente.getId())
 				.toUri();
 		return ResponseEntity.created(uri).build();
 	}
 	
 	@RequestMapping(value = "/{id}", method = RequestMethod.PUT)
-	public ResponseEntity<Void> update(@RequestBody Cliente cliente, @PathVariable Integer id) {
+	public ResponseEntity<Void> update(@RequestBody ClienteDTO clienteDTO, @PathVariable Integer id) {
+		Cliente cliente = service.fromDTO(clienteDTO);
 		cliente.setId(id);
 		cliente = service.update(cliente);
 		return ResponseEntity.noContent().build();

@@ -1,25 +1,33 @@
 package com.grupoacert.services;
 
-import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
+import com.grupoacert.domain.Entrega;
 import com.grupoacert.domain.Pedido;
+import com.grupoacert.dto.PedidoDTO;
 import com.grupoacert.repositories.PedidoRepository;
 import com.grupoacert.services.exceptions.ObjectNotFoundException;
 
 @Service
 public class PedidoService {
 	
-	@Autowired
 	private PedidoRepository pedidoRepository;
+	private ClienteService clienteService;
 	
+	@Autowired
+	public PedidoService(PedidoRepository pedidoRepository, ClienteService clienteService) {
+		this.pedidoRepository = pedidoRepository;
+		this.clienteService = clienteService;
+	}
+	
+	@Transactional
 	public Pedido insert(Pedido pedido) {
 		pedido.setId(null);
-		pedido.setInstante(new Date());
 		return pedidoRepository.save(pedido);
 	}
 	
@@ -38,11 +46,21 @@ public class PedidoService {
 	}
 	
 	public Pedido update(Pedido pedido) {
-		return pedidoRepository.saveAndFlush(pedido);
+		Pedido novoPedido = this.find(pedido.getId());
+		novoPedido.setCliente(pedido.getCliente());
+		return pedidoRepository.saveAndFlush(novoPedido);
 	}
 
 	public List<Pedido> findAll() {
 		return pedidoRepository.findAll();
+	}
+	
+	public Pedido findByIdEntrega(Integer idEntrega) {
+		return pedidoRepository.findByEntregaId(idEntrega);
+	}
+	
+	public Pedido fromDTO(PedidoDTO pedidoDTO) {
+		return new Pedido(null, clienteService.find(pedidoDTO.getIdCliente()), null);
 	}
 
 }

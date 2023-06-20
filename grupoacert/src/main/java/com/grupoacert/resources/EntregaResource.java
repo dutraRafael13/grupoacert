@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import com.grupoacert.domain.Entrega;
+import com.grupoacert.dto.EntregaDTO;
 import com.grupoacert.services.EntregaService;
 
 @RestController
@@ -29,15 +30,16 @@ public class EntregaResource {
 	}
 	
 	@RequestMapping(method = RequestMethod.POST)
-	public ResponseEntity<Void> insert(@RequestBody Entrega entrega) {
-		entrega = service.insert(entrega);
+	public ResponseEntity<Void> insert(@RequestBody EntregaDTO entregaDTO) {
+		Entrega entrega = service.insert(service.fromDTO(entregaDTO));
 		URI uri = ServletUriComponentsBuilder.fromCurrentRequest().path("/{id}").buildAndExpand(entrega.getId())
 				.toUri();
 		return ResponseEntity.created(uri).build();
 	}
 	
 	@RequestMapping(value = "/{id}", method = RequestMethod.PUT)
-	public ResponseEntity<Void> update(@RequestBody Entrega entrega, @PathVariable Integer id) {
+	public ResponseEntity<Void> update(@RequestBody EntregaDTO entregaDTO, @PathVariable Integer id) {
+		Entrega entrega = service.fromDTO(entregaDTO);
 		entrega.setId(id);
 		entrega = service.update(entrega);
 		return ResponseEntity.noContent().build();

@@ -1,5 +1,6 @@
 package com.grupoacert.services;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -8,17 +9,21 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import com.grupoacert.domain.Cliente;
+import com.grupoacert.dto.ClienteDTO;
 import com.grupoacert.repositories.ClienteRepository;
 import com.grupoacert.services.exceptions.ObjectNotFoundException;
 
 @Service
 public class ClienteService {
 	
-	@Autowired
 	private ClienteRepository clienteRepository;
+	private BCryptPasswordEncoder encrypt;
 	
 	@Autowired
-	private BCryptPasswordEncoder encrypt;
+	public ClienteService(ClienteRepository clienteRepository, BCryptPasswordEncoder encrypt) {
+		this.clienteRepository = clienteRepository;
+		this.encrypt = encrypt;
+	}
 	
 	public Cliente insert(Cliente cliente) {
 		cliente.setId(null);
@@ -46,6 +51,10 @@ public class ClienteService {
 	
 	public List<Cliente> findAll() {
 		return clienteRepository.findAll();
+	}
+	
+	public Cliente fromDTO(ClienteDTO objDto) {
+		return new Cliente(null, objDto.getNome(), objDto.getEmail(), objDto.getPassword(), new ArrayList<>());
 	}
 
 }
