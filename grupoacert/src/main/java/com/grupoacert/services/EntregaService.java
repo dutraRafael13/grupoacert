@@ -69,16 +69,11 @@ public class EntregaService {
 	
 	public Entrega find(Integer id) {
 		Optional<Entrega> entrega = entregaRepository.findById(id);
-		Pedido pedido = pedidoService.findByIdEntrega(id);
-		entrega.get().setPedido(pedido);
 		return entrega.orElseThrow(() -> new ObjectNotFoundException("Entrega não encontrada, ID: " + id));
 	}
 
 	public List<Entrega> findAll() {
 		List<Entrega> entregas = entregaRepository.findAll();
-		entregas.forEach(entrega -> {
-			entrega.setPedido(pedidoService.findByIdEntrega(entrega.getId()));
-		});
 		return entregas;
 	}
 	
